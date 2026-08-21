@@ -137,6 +137,11 @@ declare namespace API {
     status?: StatusDto;
   };
 
+  type UpdateUserNameDto = {
+    firstName?: string;
+    lastName?: string;
+  };
+
   type User = {
     id: number;
     email: string;
@@ -164,6 +169,10 @@ declare namespace API {
   };
 
   type UsersControllerRemoveV1Params = {
+    id: string;
+  };
+
+  type UsersControllerUpdateNameV1Params = {
     id: string;
   };
 
