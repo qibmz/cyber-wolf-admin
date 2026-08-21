@@ -1,26 +1,37 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock all heavy dependencies before importing app
-const mockReplace = vi.fn();
 const mockHistory = {
   location: {
     pathname: '/welcome',
     search: '',
     hash: '',
   },
-  replace: mockReplace,
+  replace: vi.fn(),
 };
 
-const mockQueryCurrentUser = vi.fn();
+const mockAuthMe = vi.fn();
+const mockClearAuth = vi.fn();
+const mockRedirectToLogin = vi.fn();
 
 vi.mock('@umijs/max', () => ({
   history: mockHistory,
   Link: ({ children }: any) => children,
 }));
 
-vi.mock('@/services/ant-design-pro/api', () => ({
-  currentUser: mockQueryCurrentUser,
+vi.mock('@/services/cyber-wolf/auth', () => ({
+  authControllerMeV1: mockAuthMe,
 }));
+
+vi.mock('@/utils/auth', async () => {
+  const actual =
+    await vi.importActual<typeof import('@/utils/auth')>('@/utils/auth');
+  return {
+    ...actual,
+    clearAuth: mockClearAuth,
+    redirectToLogin: mockRedirectToLogin,
+  };
+});
 
 vi.mock('@/components', () => ({
   AvatarDropdown: () => null,
@@ -60,18 +71,22 @@ describe('app getInitialState', () => {
 
   it('should fetch currentUser when not on login page', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: {
-        name: 'Test User',
-        access: 'admin',
-      },
+    mockAuthMe.mockResolvedValue({
+      id: 1,
+      email: 'admin@example.com',
+      firstName: 'Admin',
+      lastName: 'User',
+      role: { id: 1, name: 'admin' },
     });
 
     const state = await getInitialState();
 
-    expect(mockQueryCurrentUser).toHaveBeenCalled();
+    expect(mockAuthMe).toHaveBeenCalled();
     expect(state.currentUser).toEqual({
-      name: 'Test User',
+      name: 'Admin User',
+      email: 'admin@example.com',
+      userid: '1',
+      avatar: undefined,
       access: 'admin',
     });
     expect(state.settingDrawerOpen).toBe(false);
@@ -80,13 +95,12 @@ describe('app getInitialState', () => {
 
   it('should redirect to login when currentUser fetch fails (401)', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockRejectedValue(new Error('401 Unauthorized'));
+    mockAuthMe.mockRejectedValue(new Error('401 Unauthorized'));
 
     const state = await getInitialState();
 
-    expect(mockReplace).toHaveBeenCalledWith(
-      expect.stringContaining('/user/login?redirect='),
-    );
+    expect(mockClearAuth).toHaveBeenCalled();
+    expect(mockRedirectToLogin).toHaveBeenCalledWith('/welcome');
     expect(state.currentUser).toBeUndefined();
   });
 
@@ -100,7 +114,7 @@ describe('app getInitialState', () => {
 
     const state = await getInitialState();
 
-    expect(mockQueryCurrentUser).not.toHaveBeenCalled();
+    expect(mockAuthMe).not.toHaveBeenCalled();
     expect(state.currentUser).toBeUndefined();
     expect(state.fetchUserInfo).toBeDefined();
   });
@@ -112,35 +126,27 @@ describe('app getInitialState', () => {
       search: '?page=2',
       hash: '#section',
     };
-    mockQueryCurrentUser.mockRejectedValue(new Error('401'));
+    mockAuthMe.mockRejectedValue(new Error('401'));
 
     await getInitialState();
 
-    expect(mockReplace).toHaveBeenCalledWith(
-      `/user/login?redirect=${encodeURIComponent('/admin/users?page=2#section')}`,
+    expect(mockRedirectToLogin).toHaveBeenCalledWith(
+      '/admin/users?page=2#section',
     );
   });
 
   it('should include default settings in initial state', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: { name: 'User' },
+    mockAuthMe.mockResolvedValue({
+      id: 2,
+      email: 'user@example.com',
+      firstName: 'User',
+      lastName: '',
+      role: { id: 2, name: 'user' },
     });
 
     const state = await getInitialState();
 
     expect(state.settings).toEqual({ navTheme: 'light' });
-  });
-
-  it('fetchUserInfo should return user data on success', async () => {
-    const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: { name: 'Fetched User', access: 'user' },
-    });
-
-    const state = await getInitialState();
-
-    const user = await state.fetchUserInfo?.();
-    expect(user).toEqual({ name: 'Fetched User', access: 'user' });
   });
 });

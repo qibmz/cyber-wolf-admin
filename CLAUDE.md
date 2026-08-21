@@ -6,37 +6,46 @@ Ant Design Pro — React enterprise boilerplate on Umi Max v4, antd v6, ProCompo
 
 ## Commands
 
-`npm start` (dev+mock), `npm run dev` (no mock), `npm run build` (utoopack), `npm run lint` (Biome+tsc), `npm run test` (Jest), `npx antd lint ./src` (antd-specific checks).
+`npm run dev` (**推荐本地联调**：`MOCK=none` + proxy → `http://localhost:3001`), `npm start` (dev+mock，旧 Pro mock，不用于对接 backend), `npm run build` (utoopack), `npm run lint` (Biome+tsc), `npm run test` (Vitest), `npx antd lint ./src` (antd-specific checks).
 
-Other: `npm run openapi` (regenerate `src/services/`), `npm run simple` (**irreversible** — commit first), `npm run biome` (auto-fix), `npm run tsc` (type-check only).
+Other: `npm run openapi` (从 `http://localhost:3001/docs-json` 生成 `src/services/cyber-wolf/`，需先启动 backend), `npm run biome` (auto-fix), `npm run tsc` (type-check only).
 
 ## Critical Rules
 
-- **Never edit `src/services/ant-design-pro/`** — auto-generated, regenerate with `npm run openapi`
+- **Never edit `src/services/cyber-wolf/`** — OpenAPI 生成，改接口后重新 `npm run openapi`
+- **Never edit `src/services/ant-design-pro/`** — 旧模板生成物，业务勿再依赖
 - **Biome only** — no ESLint, no Prettier. Both `npm run lint` and `npx antd lint ./src` must pass before commit
 - **Always `npx antd info <Component>` before writing antd code** — don't guess APIs from memory
-- **`npm run simple` is irreversible** — always commit/branch first
 - **Conventional commits** required (commitlint enforced)
-- **TypeScript strict** · **Node ≥ 22** · **`package-lock.json`** (not yarn/pnpm)
+- **TypeScript strict** · **Node ≥ 22** · **`package-lock.json`** (not yarn/pnpm；勿提交 `pnpm-lock.yaml` / `yarn.lock`)
 - **`.umi` dir is auto-generated** — delete `src/.umi` and restart if dev server acts up
+
+## Local backend
+
+1. 启动 **cyber-wolf-backend**（默认 `APP_PORT=3001`）
+2. 本仓库执行 `npm run dev`
+3. 浏览器打开 `http://localhost:8000/user/login`
+4. 种子账号示例：`admin@example.com` / `secret`（以 backend seed 为准）
+
+代理见 `config/proxy.ts`（`/api/` → `:3001`）。Token 存 `localStorage`（`token` / `refreshToken` / `tokenExpires`）。
 
 ## Architecture Essentials
 
-**Config**: `config/config.ts` (defineConfig), `config/routes.ts` (declarative routes). Route `name` → `menu.xxx` i18n key; `access` field gates visibility.
+**Config**: `config/config.ts` (defineConfig), `config/routes.ts` (declarative routes). Route `name` 用英文 → `menu.xxx` i18n key；`access` field gates visibility.
 
 **Convention files** (`src/`): `app.tsx` (runtime config + `getInitialState`), `access.ts` (permissions), `global.tsx` (side effects), `loading.tsx`, `typings.d.ts`.
 
-**Auth**: `getInitialState()` → `GET /api/currentUser`; 401 → redirect login. `access.ts`: `canAdmin = currentUser.access === 'admin'`. Mock creds: `admin`/`ant.design` or `user`/`ant.design`.
+**Auth**: `getInitialState()` → `GET /api/v1/auth/me`；登录 `POST /api/v1/auth/email/login`。`access.ts`: `canAdmin = currentUser.access === 'admin'`（由 `mapUserToCurrentUser` 映射 role）。401 → `clearAuth` + 跳转 `/user/login`。
 
-**State**: `useModel('filename')` for global hooks (`src/models/`). `useModel('@@initialState')` for currentUser/settings. ProTable `request` prop for most data loading. `@tanstack/react-query` for complex server state.
+**State**: `useModel('filename')` for global hooks (`src/models/`). `useModel('@@initialState')` for currentUser/settings. ProTable `request` prop for most data loading.
 
 **Styling priority**: Tailwind CSS v4 (layout) → antd-style v4 / `createStyles` (theme tokens) → CSS Modules → Less (legacy only).
 
-**Request**: built-in `request` from `@umijs/max`, configured in `src/requestErrorConfig.ts`. Per-page `service.ts` for non-generated APIs.
+**Request**: built-in `request` from `@umijs/max`，在 `src/requestErrorConfig.ts` 注入 Bearer、解包 `{ code, msg, data }`。Auth 工具：`src/utils/auth.ts`。
 
-**i18n**: 8 locales in `src/locales/`. `useIntl().formatMessage({ id, defaultMessage })`.
+**i18n**: locales in `src/locales/`. `useIntl().formatMessage({ id, defaultMessage })`.
 
-**Mock**: `mock/` (global) + `src/pages/**/_mock.ts` (co-located). Express-style handlers.
+**Mock**: `mock/` 为旧 Pro 模板；对接 backend 时请用 `npm run dev`（`MOCK=none`）。
 
 **Cloudflare Worker**: `cloudflare-worker/` — separate Hono app, own `package.json`, not an npm workspace.
 

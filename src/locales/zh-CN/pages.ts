@@ -1,14 +1,16 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Ant Design 是西湖区最具影响力的 Web 设计规范',
+  'pages.layouts.userLayout.title': 'Cyber Wolf 后台管理系统',
   'pages.login.accountLogin.tab': '账户密码登录',
   'pages.login.accountLogin.errorMessage':
-    '错误的用户名和密码(admin/ant.design)',
+    '账户或密码错误（admin@example.com / secret）',
   'pages.login.failure': '登录失败，请重试！',
   'pages.login.success': '登录成功！',
+  'pages.login.email.placeholder': '邮箱: admin@example.com',
+  'pages.login.email.required': '请输入邮箱!',
+  'pages.login.email.invalid': '邮箱格式不正确!',
   'pages.login.username.placeholder': '用户名: admin or user',
   'pages.login.username.required': '用户名是必填项！',
-  'pages.login.password.placeholder': '密码: ant.design',
+  'pages.login.password.placeholder': '密码: secret',
   'pages.login.password.required': '密码是必填项！',
   'pages.login.phoneLogin.tab': '手机号登录',
   'pages.login.phoneLogin.errorMessage': '验证码错误',
@@ -25,17 +27,13 @@ export default {
   'pages.login.loginWith': '其他登录方式 :',
   'pages.login.registerAccount': '注册账户',
   'pages.welcome.link': '欢迎使用',
-  'pages.welcome.celebrationTitle': '欢迎使用 Ant Design Pro {v6}',
-  'pages.welcome.alertMessage': '更快更强的重型组件，已经发布。',
-  'pages.welcome.infoCard.umi.title': '了解 umi',
-  'pages.welcome.infoCard.umi.desc':
-    'umi 是一个可扩展的企业级前端应用框架，以路由为基础，支持配置式路由和约定式路由。',
-  'pages.welcome.infoCard.antd.title': '了解 Ant Design',
-  'pages.welcome.infoCard.antd.desc':
-    'antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。',
-  'pages.welcome.infoCard.procomponents.title': '了解 Pro Components',
-  'pages.welcome.infoCard.procomponents.desc':
-    'ProComponents 是基于 Ant Design 的高抽象模板组件，以一个组件就是一个页面为开发理念。',
+  'pages.welcome.celebrationTitle': '欢迎使用 Cyber Wolf Admin',
+  'pages.welcome.hello': '你好，{name}',
+  'pages.welcome.alertMessage':
+    '这里是 Cyber Wolf 后台管理系统。你可以从左侧菜单进入业务模块，或使用下方快捷入口。',
+  'pages.welcome.card.users.title': '用户管理',
+  'pages.welcome.card.users.desc': '查看与筛选系统用户、角色与状态。',
+  'pages.welcome.card.users.action': '进入用户管理',
   'pages.404.subTitle': '抱歉，您访问的页面不存在。',
   'pages.404.buttonText': '返回首页',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',

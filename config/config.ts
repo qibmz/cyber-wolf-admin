@@ -201,9 +201,10 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      // 或者使用在线的版本
-      // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
-      schemaPath: join(__dirname, 'oneapi.json'),
+      // cyber-wolf-backend Swagger（需本地 backend 已启动，默认 :3001）
+      // 生成产物：src/services/cyber-wolf/（勿手改，改接口后重新 npm run openapi）
+      schemaPath: 'http://localhost:3001/docs-json',
+      projectName: 'cyber-wolf',
       mock: false,
     },
   ],
