@@ -31,6 +31,9 @@ export default {
   'pages.welcome.hello': '你好，{name}',
   'pages.welcome.alertMessage':
     '这里是 Cyber Wolf 后台管理系统。你可以从左侧菜单进入业务模块，或使用下方快捷入口。',
+  'pages.welcome.guest.title': '请先登录',
+  'pages.welcome.guest.desc': '登录后可使用用户管理等后台功能。',
+  'pages.welcome.guest.action': '去登录',
   'pages.welcome.card.users.title': '用户管理',
   'pages.welcome.card.users.desc': '查看与筛选系统用户、角色与状态。',
   'pages.welcome.card.users.action': '进入用户管理',

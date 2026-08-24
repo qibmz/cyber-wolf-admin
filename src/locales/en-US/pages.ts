@@ -31,6 +31,10 @@ export default {
   'pages.welcome.hello': 'Hello, {name}',
   'pages.welcome.alertMessage':
     'This is the Cyber Wolf admin console. Use the sidebar or the shortcuts below to get started.',
+  'pages.welcome.guest.title': 'Please sign in',
+  'pages.welcome.guest.desc':
+    'Sign in to use admin features such as user management.',
+  'pages.welcome.guest.action': 'Go to Login',
   'pages.welcome.card.users.title': 'Users',
   'pages.welcome.card.users.desc':
     'Browse and filter system users, roles, and status.',
