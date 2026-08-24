@@ -93,14 +93,14 @@ describe('app getInitialState', () => {
     expect(state.fetchUserInfo).toBeDefined();
   });
 
-  it('should redirect to login when currentUser fetch fails (401)', async () => {
+  it('should stay on welcome as guest when currentUser fetch fails (401)', async () => {
     const { getInitialState } = await import('./app');
     mockAuthMe.mockRejectedValue(new Error('401 Unauthorized'));
 
     const state = await getInitialState();
 
     expect(mockClearAuth).toHaveBeenCalled();
-    expect(mockRedirectToLogin).toHaveBeenCalledWith('/welcome');
+    expect(mockRedirectToLogin).not.toHaveBeenCalled();
     expect(state.currentUser).toBeUndefined();
   });
 
