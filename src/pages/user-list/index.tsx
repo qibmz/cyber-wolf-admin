@@ -9,9 +9,10 @@ import {
 import type { MenuProps } from 'antd';
 import { App, Button, Dropdown, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import { useTableUrlQuery } from '@/hooks/useTableUrlQuery';
 import {
   usersControllerFindAllV1,
-  usersControllerUpdateNameV1,
+  usersControllerUpdateV1,
 } from '@/services/cyber-wolf/users';
 
 const ROLE_VALUE_ENUM = {
@@ -24,33 +25,40 @@ const STATUS_VALUE_ENUM = {
   2: { text: 'Inactive', status: 'Default' },
 } as const;
 
-/** 行操作 key —— 新增操作时在此扩展 */
-type UserRowActionKey = 'editName';
+const DEFAULT_PAGE_SIZE = 10;
 
-type UserModalState = { type: 'none' } | { type: 'editName'; user: API.User };
+const USER_URL_FIELDS = {
+  roleId: { type: 'number' as const },
+};
+
+type UserListFilters = {
+  roleId?: number;
+};
+
+/** 行操作 key —— 新增操作时在此扩展 */
+type UserRowActionKey = 'editNickname';
+
+type UserModalState =
+  | { type: 'none' }
+  | { type: 'editNickname'; user: API.User };
 
 function buildUserRowActions(_record: API.User): MenuProps['items'] {
-  // 按行控制可见/禁用时，在这里根据 record 过滤
   return [
     {
-      key: 'editName' satisfies UserRowActionKey,
-      label: '修改姓名',
+      key: 'editNickname' satisfies UserRowActionKey,
+      label: '修改昵称',
     },
-    // 后续操作示例：
-    // { key: 'editRole', label: '修改角色' },
-    // { type: 'divider' },
-    // { key: 'disable', label: '停用', danger: true },
   ];
 }
 
-type EditNameModalProps = {
+type EditNicknameModalProps = {
   user: API.User | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
 };
 
-const EditNameModal: React.FC<EditNameModalProps> = ({
+const EditNicknameModal: React.FC<EditNicknameModalProps> = ({
   user,
   open,
   onOpenChange,
@@ -59,50 +67,35 @@ const EditNameModal: React.FC<EditNameModalProps> = ({
   const { message } = App.useApp();
 
   return (
-    <ModalForm<API.UpdateUserNameDto>
-      title="修改姓名"
+    <ModalForm<{ nickname?: string }>
+      title="修改昵称"
       open={open}
       onOpenChange={onOpenChange}
       modalProps={{
         destroyOnHidden: true,
       }}
       initialValues={{
-        firstName: user?.firstName,
-        lastName: user?.lastName,
+        nickname: user?.nickname,
       }}
       onFinish={async (values) => {
         if (!user?.id) return false;
 
-        const firstName = values.firstName?.trim();
-        const lastName = values.lastName?.trim();
-
-        if (!firstName && !lastName) {
-          message.warning('请至少填写名或姓');
+        const nickname = values.nickname?.trim();
+        if (!nickname) {
+          message.warning('请填写昵称');
           return false;
         }
 
-        await usersControllerUpdateNameV1(
-          { id: String(user.id) },
-          {
-            ...(firstName ? { firstName } : {}),
-            ...(lastName ? { lastName } : {}),
-          },
-        );
-        message.success('姓名已更新');
+        await usersControllerUpdateV1({ id: String(user.id) }, { nickname });
+        message.success('昵称已更新');
         onSuccess();
         return true;
       }}
     >
       <ProFormText
-        name="firstName"
-        label="名 (firstName)"
-        placeholder="例如 John"
-        fieldProps={{ maxLength: 50 }}
-      />
-      <ProFormText
-        name="lastName"
-        label="姓 (lastName)"
-        placeholder="例如 Doe"
+        name="nickname"
+        label="昵称"
+        rules={[{ required: true, message: '请填写昵称' }]}
         fieldProps={{ maxLength: 50 }}
       />
     </ModalForm>
@@ -111,14 +104,20 @@ const EditNameModal: React.FC<EditNameModalProps> = ({
 
 const UserList: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { syncUrl, onReset, formRef, pagination, manualRequest } =
+    useTableUrlQuery<UserListFilters>({
+      defaultPageSize: DEFAULT_PAGE_SIZE,
+      fields: USER_URL_FIELDS,
+      actionRef,
+    });
   const [modalState, setModalState] = useState<UserModalState>({
     type: 'none',
   });
 
   const handleRowAction = (key: UserRowActionKey, record: API.User) => {
     switch (key) {
-      case 'editName':
-        setModalState({ type: 'editName', user: record });
+      case 'editNickname':
+        setModalState({ type: 'editNickname', user: record });
         break;
       default: {
         const _exhaustive: never = key;
@@ -142,11 +141,11 @@ const UserList: React.FC = () => {
       search: false,
     },
     {
-      title: '姓名',
-      dataIndex: 'name',
+      title: '昵称',
+      dataIndex: 'nickname',
       search: false,
-      render: (_, record) =>
-        [record.firstName, record.lastName].filter(Boolean).join(' ') || '—',
+      ellipsis: true,
+      render: (_, record) => record.nickname || '—',
     },
     {
       title: '角色',
@@ -214,19 +213,31 @@ const UserList: React.FC = () => {
       <ProTable<API.User>
         headerTitle="用户列表"
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 'auto',
         }}
         scroll={{ x: 960 }}
+        manualRequest={manualRequest}
+        onReset={onReset}
         request={async (params) => {
           const page = params.current ?? 1;
-          const limit = params.pageSize ?? 10;
-          const roleId = params.roleId;
-          const filters =
-            roleId != null && roleId !== ''
-              ? JSON.stringify({ roles: [{ id: Number(roleId) }] })
+          const limit = params.pageSize ?? DEFAULT_PAGE_SIZE;
+          const roleId =
+            params.roleId != null && params.roleId !== ''
+              ? Number(params.roleId)
               : undefined;
+          const filters =
+            roleId != null && Number.isFinite(roleId)
+              ? JSON.stringify({ roles: [{ id: roleId }] })
+              : undefined;
+
+          syncUrl({
+            current: page,
+            pageSize: limit,
+            roleId,
+          });
 
           const result = await usersControllerFindAllV1({
             page,
@@ -234,29 +245,28 @@ const UserList: React.FC = () => {
             filters,
           });
 
-          const list = result?.data ?? [];
-          const hasNextPage = Boolean(result?.hasNextPage);
+          const list = Array.isArray(result?.data) ? result.data : [];
+          const total =
+            typeof result?.total === 'number' ? result.total : list.length;
 
           return {
             data: list,
             success: true,
-            // 后端是 infinity pagination（无 total），用 hasNextPage 估算
-            total: hasNextPage
-              ? page * limit + 1
-              : (page - 1) * limit + list.length,
+            total,
           };
         }}
         columns={columns}
         pagination={{
-          defaultPageSize: 10,
+          ...pagination,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
+          showTotal: (t) => `共 ${t} 条`,
         }}
       />
 
-      <EditNameModal
-        user={modalState.type === 'editName' ? modalState.user : null}
-        open={modalState.type === 'editName'}
+      <EditNicknameModal
+        user={modalState.type === 'editNickname' ? modalState.user : null}
+        open={modalState.type === 'editNickname'}
         onOpenChange={(open) => {
           if (!open) setModalState({ type: 'none' });
         }}

@@ -190,6 +190,22 @@ describe('requestErrorConfig', () => {
       expect(message.error).toHaveBeenCalledWith('Response status:500');
     });
 
+    it('should use backend error message from response envelope', () => {
+      const error: any = new Error('Axios error');
+      error.response = {
+        status: 500,
+        data: {
+          code: 500,
+          msg: '服务器内部错误',
+          errors: {},
+        },
+      };
+
+      errorHandler(error, {});
+
+      expect(message.error).toHaveBeenCalledWith('服务器内部错误');
+    });
+
     it('should handle offline error', () => {
       const error: any = new Error('Network error');
       error.request = {};

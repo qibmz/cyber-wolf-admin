@@ -35,7 +35,7 @@ export async function newsArticlesControllerFindByIdV1(
 export async function newsArticlesControllerFindCategoriesV1(options?: {
   [key: string]: any;
 }) {
-  return request<string[]>("/api/v1/news/categories", {
+  return request<API.NewsCategory[]>("/api/v1/news/categories", {
     method: "GET",
     ...(options || {}),
   });

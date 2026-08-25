@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Ant Design 是西湖區最具影響力的 Web 設計規範',
+  'pages.layouts.userLayout.title': 'Cyber Wolf 後台管理系統',
   'pages.login.accountLogin.tab': '賬戶密碼登錄',
   'pages.login.accountLogin.errorMessage':
     '錯誤的用戶名和密碼(admin/ant.design)',
@@ -25,7 +24,7 @@ export default {
   'pages.login.loginWith': '其他登錄方式 :',
   'pages.login.registerAccount': '註冊賬戶',
   'pages.welcome.link': '歡迎使用',
-  'pages.welcome.celebrationTitle': '歡迎使用 Ant Design Pro {v6}',
+  'pages.welcome.celebrationTitle': '歡迎使用 Cyber Wolf Admin',
   'pages.welcome.alertMessage': '更快更強的重型組件，已經發布。',
   'pages.404.subTitle': '抱歉，您訪問的頁面不存在。',
   'pages.404.buttonText': '返回首頁',

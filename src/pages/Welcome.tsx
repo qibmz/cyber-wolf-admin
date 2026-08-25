@@ -1,4 +1,4 @@
-import { LoginOutlined, TeamOutlined } from '@ant-design/icons';
+import { LoginOutlined, ReadOutlined, TeamOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { history, useAccess, useIntl, useModel } from '@umijs/max';
 import { Button, Card, Col, Result, Row, Typography } from 'antd';
@@ -88,11 +88,41 @@ const Welcome: React.FC = () => {
                     </Paragraph>
                     <Button
                       type="primary"
-                      onClick={() => history.push('/admin/users')}
+                      onClick={() => history.push('/users')}
                     >
                       {intl.formatMessage({
                         id: 'pages.welcome.card.users.action',
                         defaultMessage: '进入用户管理',
+                      })}
+                    </Button>
+                  </Card>
+                </Col>
+                <Col xs={24} sm={12} md={8}>
+                  <Card size="small" hoverable>
+                    <div className="mb-3 flex items-center gap-2">
+                      <ReadOutlined
+                        style={{ fontSize: 20, color: '#1677ff' }}
+                      />
+                      <Text strong>
+                        {intl.formatMessage({
+                          id: 'pages.welcome.card.news.title',
+                          defaultMessage: '资讯管理',
+                        })}
+                      </Text>
+                    </div>
+                    <Paragraph type="secondary" style={{ minHeight: 44 }}>
+                      {intl.formatMessage({
+                        id: 'pages.welcome.card.news.desc',
+                        defaultMessage: '创建、编辑与管理资讯内容与封面。',
+                      })}
+                    </Paragraph>
+                    <Button
+                      type="primary"
+                      onClick={() => history.push('/news/articles')}
+                    >
+                      {intl.formatMessage({
+                        id: 'pages.welcome.card.news.action',
+                        defaultMessage: '进入资讯管理',
                       })}
                     </Button>
                   </Card>

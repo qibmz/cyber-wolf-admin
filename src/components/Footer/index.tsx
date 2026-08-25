@@ -6,13 +6,13 @@ import React from 'react';
 
 const getRepoUrl = () => {
   if (!packageJson.repository)
-    return 'https://github.com/ant-design/ant-design-pro';
+    return 'https://github.com/qibmz/cyber-wolf-admin';
   const repo =
     typeof packageJson.repository === 'string'
       ? packageJson.repository
       : (packageJson.repository as { url: string }).url;
   const match = repo.match(/github\.com[:/]([^/]+)\/([^/.]+)/);
-  if (!match) return 'https://github.com/ant-design/ant-design-pro';
+  if (!match) return 'https://github.com/qibmz/cyber-wolf-admin';
   return `https://github.com/${match[1]}/${match[2]}`;
 };
 
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
 
   return (
     <div className={styles.footer}>
-      <div className={styles.copyright}>Ant Design Pro &copy; {year}</div>
+      <div className={styles.copyright}>Cyber Wolf &copy; {year}</div>
       <div className={styles.meta}>
         <span className={styles.group}>
           <span className={styles.label}>ver</span>

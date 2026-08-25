@@ -39,6 +39,10 @@ export default {
   'pages.welcome.card.users.desc':
     'Browse and filter system users, roles, and status.',
   'pages.welcome.card.users.action': 'Open Users',
+  'pages.welcome.card.news.title': 'News',
+  'pages.welcome.card.news.desc':
+    'Create, edit, and manage news articles and covers.',
+  'pages.welcome.card.news.action': 'Open News',
   'pages.404.subTitle': 'Sorry, the page you visited does not exist.',
   'pages.404.buttonText': 'Back Home',
   'pages.admin.subPage.title': 'This page can only be viewed by Admin',

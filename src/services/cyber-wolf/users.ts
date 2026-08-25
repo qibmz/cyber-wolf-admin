@@ -78,22 +78,3 @@ export async function usersControllerUpdateV1(
     ...(options || {}),
   });
 }
-
-/** 修改用户姓名（admin） PATCH /api/v1/users/${param0}/name */
-export async function usersControllerUpdateNameV1(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.UsersControllerUpdateNameV1Params,
-  body: API.UpdateUserNameDto,
-  options?: { [key: string]: any }
-) {
-  const { id: param0, ...queryParams } = params;
-  return request<API.User>(`/api/v1/users/${param0}/name`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    params: { ...queryParams },
-    data: body,
-    ...(options || {}),
-  });
-}

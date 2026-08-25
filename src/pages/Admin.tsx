@@ -29,8 +29,8 @@ const Admin: React.FC = () => {
           }}
         />
         <Typography.Title level={2} style={{ textAlign: 'center' }}>
-          <SmileTwoTone /> Ant Design Pro{' '}
-          <HeartTwoTone twoToneColor="#eb2f96" /> You
+          <SmileTwoTone /> Cyber Wolf <HeartTwoTone twoToneColor="#eb2f96" />{' '}
+          Admin
         </Typography.Title>
       </Card>
       <p style={{ textAlign: 'center', marginTop: 24 }}>

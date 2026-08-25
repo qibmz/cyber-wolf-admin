@@ -74,8 +74,7 @@ describe('app getInitialState', () => {
     mockAuthMe.mockResolvedValue({
       id: 1,
       email: 'admin@example.com',
-      firstName: 'Admin',
-      lastName: 'User',
+      nickname: 'Admin User',
       role: { id: 1, name: 'admin' },
     });
 
@@ -140,8 +139,7 @@ describe('app getInitialState', () => {
     mockAuthMe.mockResolvedValue({
       id: 2,
       email: 'user@example.com',
-      firstName: 'User',
-      lastName: '',
+      nickname: 'User',
       role: { id: 2, name: 'user' },
     });
 

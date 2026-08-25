@@ -98,9 +98,7 @@ export function redirectToLogin(redirectPath?: string) {
 
 /** Map backend User → ProLayout CurrentUser fields */
 export function mapUserToCurrentUser(user: API.User): API.CurrentUser {
-  const name =
-    [user.firstName, user.lastName].filter(Boolean).join(' ').trim() ||
-    user.email;
+  const name = user.nickname?.trim() || user.email;
   const roleId = user.role?.id;
   const access =
     roleId === ROLE_ADMIN_ID || user.role?.name?.toLowerCase() === 'admin'

@@ -140,7 +140,7 @@ export function getProjectNotice() {
     },
     {
       id: 'xxx3',
-      title: 'Ant Design',
+      title: 'Cyber Wolf',
       logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
       description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
       updatedAt: now,
@@ -150,7 +150,7 @@ export function getProjectNotice() {
     },
     {
       id: 'xxx4',
-      title: 'Ant Design Pro',
+      title: 'Cyber Wolf Admin',
       logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
       description: '那时候我只会想自己想要什么，从不想自己拥有什么',
       updatedAt: '2017-07-23',

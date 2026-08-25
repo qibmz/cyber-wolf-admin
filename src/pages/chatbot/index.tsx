@@ -147,7 +147,7 @@ const ChatbotPage: React.FC = () => {
     },
     {
       key: 'preset-6',
-      label: '🚀 Ant Design Pro 如何接入后端权限系统？',
+      label: '🚀 Cyber Wolf 后台如何接入权限系统？',
       group: '更早',
     },
     {
