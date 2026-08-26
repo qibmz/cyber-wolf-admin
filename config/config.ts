@@ -11,8 +11,9 @@ const { UMI_ENV = 'dev' } = process.env;
 
 /**
  * 浏览器请求后端的绝对地址。
- * - 本地 / start:test / start:pre：走 proxy，留空（相对路径 /api）
- * - 构建产物：可用 API_SERVER 注入；默认空字符串表示同域网关反代 /api
+ * - 本地 max dev：留空，走 config/proxy.ts
+ * - Vercel：Dashboard 里同名 `API_SERVER` 按 Production / Preview 分别取值，构建时自动注入，无需判断 VERCEL_ENV
+ * - 也可本地：npm run build:test / build:prod
  */
 const API_SERVER = process.env.API_SERVER ?? '';
 

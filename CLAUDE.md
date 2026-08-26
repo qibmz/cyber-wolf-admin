@@ -37,6 +37,15 @@ Other: `npm run openapi`（本机 `http://localhost:3001/docs-json`）, `npm run
 
 不启本机 backend 时可 `npm run start:test`，代理到测试域。代理见 `config/proxy.ts`（`/api/`）。Token 存 `localStorage`（`token` / `refreshToken` / `tokenExpires`）。
 
+Vercel（[Environment Variables](https://vercel.com/docs/environment-variables)）：同一变量名 `API_SERVER`，按环境勾选即可，构建时自动注入，代码只需读 `process.env.API_SERVER`。
+
+| Environment | `API_SERVER` |
+| --- | --- |
+| Preview（非 production 分支，含 `develop`） | `https://cyber-wolf-backend-dev.qibmz.com` |
+| Production（production 分支，通常 `main`） | `https://cyber-wolf-backend.qibmz.com` |
+
+也可用 `vercel env add API_SERVER preview` / `production`。仓库 `.env` 仅给本地占位，不要指望用 `.env.production` 区分 Preview/Production（两者构建都是 production）。后端需 CORS 放行对应前端域名。
+
 ## Architecture Essentials
 
 **Config**: `config/config.ts` (defineConfig), `config/routes.ts` (declarative routes). Route `name` 用英文 → `menu.xxx` i18n key；`access` field gates visibility.
