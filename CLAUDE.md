@@ -44,7 +44,7 @@ Vercel（[Environment Variables](https://vercel.com/docs/environment-variables)�
 | Preview（非 production 分支，含 `develop`） | `https://cyber-wolf-backend-dev.qibmz.com` |
 | Production（production 分支，通常 `main`） | `https://cyber-wolf-backend.qibmz.com` |
 
-也可用 `vercel env add API_SERVER preview` / `production`。仓库 `.env` 仅给本地占位，不要指望用 `.env.production` 区分 Preview/Production（两者构建都是 production）。后端需 CORS 放行对应前端域名。
+也可用 `vercel env add API_SERVER preview` / `production`。仓库 `.env.example` 仅作说明；不要指望用 `.env.production` 区分 Preview/Production（两者构建都是 production）。后端需 CORS 放行对应前端域名。
 
 ## Architecture Essentials
 
