@@ -10,12 +10,19 @@ import routes from './routes';
 const { UMI_ENV = 'dev' } = process.env;
 
 /**
- * 浏览器请求后端的绝对地址。
+ * 浏览器请求后端的绝对地址（构建时写入前端包）。
  * - 本地 max dev：留空，走 config/proxy.ts
- * - Vercel：Dashboard 里同名 `API_SERVER` 按 Production / Preview 分别取值，构建时自动注入，无需判断 VERCEL_ENV
- * - 也可本地：npm run build:test / build:prod
+ * - Vercel：Dashboard 配置 `API_SERVER`（Preview / Production 各一份），改完后需重新部署
+ * - 也可 `UMI_APP_API_SERVER`（Umi 约定前缀）或 npm run build:test / build:prod
  */
-const API_SERVER = process.env.API_SERVER ?? '';
+const API_SERVER =
+  process.env.API_SERVER || process.env.UMI_APP_API_SERVER || '';
+
+if (process.env.VERCEL) {
+  console.log(
+    `[cyber-wolf-admin] VERCEL_ENV=${process.env.VERCEL_ENV ?? ''} API_SERVER=${API_SERVER || '(empty — requests will hit the frontend origin)'}`,
+  );
+}
 
 // Compute commit hash: env vars take precedence, fall back to git at build time
 const commitHash =
@@ -239,6 +246,8 @@ export default defineConfig({
   define: {
     'process.env.CI': process.env.CI,
     'process.env.COMMIT_HASH': commitHash,
+    // 必须 JSON 字面量进客户端；裸标识符 API_SERVER 在部分打包链路下可能未替换成功
+    'process.env.API_SERVER': API_SERVER,
     API_SERVER,
     BACKEND_DEV,
     BACKEND_PROD,

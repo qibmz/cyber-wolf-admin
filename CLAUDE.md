@@ -37,14 +37,14 @@ Other: `npm run openapi`（本机 `http://localhost:3001/docs-json`）, `npm run
 
 不启本机 backend 时可 `npm run start:test`，代理到测试域。代理见 `config/proxy.ts`（`/api/`）。Token 存 `localStorage`（`token` / `refreshToken` / `tokenExpires`）。
 
-Vercel（[Environment Variables](https://vercel.com/docs/environment-variables)）：同一变量名 `API_SERVER`，按环境勾选即可，构建时自动注入，代码只需读 `process.env.API_SERVER`。
+Vercel（[Environment Variables](https://vercel.com/docs/environment-variables)）：同一变量名 `API_SERVER`，按环境勾选即可。Umi 通过 `config.define` 在**构建时**写入前端包，改 env 后必须 **Redeploy**。
 
 | Environment | `API_SERVER` |
 | --- | --- |
-| Preview（非 production 分支，含 `develop`） | `https://cyber-wolf-backend-dev.qibmz.com` |
-| Production（production 分支，通常 `main`） | `https://cyber-wolf-backend.qibmz.com` |
+| Preview（含 `develop`） | `https://cyber-wolf-backend-dev.qibmz.com`（不要末尾 `/`） |
+| Production（`main`） | `https://cyber-wolf-backend.qibmz.com` |
 
-也可用 `vercel env add API_SERVER preview` / `production`。仓库 `.env.example` 仅作说明；不要指望用 `.env.production` 区分 Preview/Production（两者构建都是 production）。后端需 CORS 放行对应前端域名。
+自查：Vercel 构建日志应出现 `[cyber-wolf-admin] ... API_SERVER=https://...`；若是 `(empty)` 说明该次构建没读到变量（环境未勾选 Preview/Production，或未重新部署）。浏览器 Network 里登录请求应指向后端域名；若仍指向 `*.vercel.app`，包是旧的。后端需 CORS 放行对应前端 Origin。
 
 ## Architecture Essentials
 
