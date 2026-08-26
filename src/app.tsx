@@ -197,8 +197,8 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  // 开发走 config/proxy.ts → cyber-wolf-backend；生产由网关同域反代 /api
-  baseURL: '',
+  // 开发/测试：config/proxy.ts 转发 /api；构建产物可经 API_SERVER 直连远程后端
+  baseURL: typeof API_SERVER === 'undefined' ? '' : API_SERVER,
   ...errorConfig,
 };
 

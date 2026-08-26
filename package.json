@@ -7,6 +7,8 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
+    "build:test": "cross-env API_SERVER=https://cyber-wolf-backend-dev.qibmz.com max build",
+    "build:prod": "cross-env API_SERVER=https://cyber-wolf-backend.qibmz.com max build",
     "deploy": "cross-env CI=true max build && gh-pages -d dist",
     "dev": "cross-env UMI_ENV=dev MOCK=none max dev",
     "i18n-remove": "node scripts/i18n-remove.js",
@@ -15,6 +17,7 @@
     "biome:lint": "biome lint",
     "biome": "biome check --write",
     "openapi": "max openapi",
+    "openapi:remote": "cross-env OPENAPI_SCHEMA_URL=https://cyber-wolf-backend-dev.qibmz.com/docs-json max openapi",
     "prepare": "npx husky && max setup",
     "preview": "max preview --port 8000",
     "preview:build": "max build && max preview --port 8000",

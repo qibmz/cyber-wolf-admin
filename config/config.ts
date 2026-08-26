@@ -3,11 +3,18 @@
 import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
-import proxy from './proxy';
+import proxy, { BACKEND_DEV, BACKEND_PROD } from './proxy';
 
 import routes from './routes';
 
 const { UMI_ENV = 'dev' } = process.env;
+
+/**
+ * 浏览器请求后端的绝对地址。
+ * - 本地 / start:test / start:pre：走 proxy，留空（相对路径 /api）
+ * - 构建产物：可用 API_SERVER 注入；默认空字符串表示同域网关反代 /api
+ */
+const API_SERVER = process.env.API_SERVER ?? '';
 
 // Compute commit hash: env vars take precedence, fall back to git at build time
 const commitHash =
@@ -201,9 +208,10 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      // cyber-wolf-backend Swagger（需本地 backend 已启动，默认 :3001）
+      // 默认本机 swagger；远程：OPENAPI_SCHEMA_URL=... npm run openapi
       // 生成产物：src/services/cyber-wolf/（勿手改，改接口后重新 npm run openapi）
-      schemaPath: 'http://localhost:3001/docs-json',
+      schemaPath:
+        process.env.OPENAPI_SCHEMA_URL || 'http://localhost:3001/docs-json',
       projectName: 'cyber-wolf',
       mock: false,
     },
@@ -230,6 +238,9 @@ export default defineConfig({
   define: {
     'process.env.CI': process.env.CI,
     'process.env.COMMIT_HASH': commitHash,
+    API_SERVER,
+    BACKEND_DEV,
+    BACKEND_PROD,
     __APP_VERSION__: require('./../package.json').version,
     __UMI_VERSION__: require('@umijs/max/package.json').version,
     __UTOO_VERSION__: require('@utoo/pack/package.json').version,
