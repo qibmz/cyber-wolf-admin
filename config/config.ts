@@ -3,11 +3,26 @@
 import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
-import proxy from './proxy';
+import proxy, { BACKEND_DEV, BACKEND_PROD } from './proxy';
 
 import routes from './routes';
 
 const { UMI_ENV = 'dev' } = process.env;
+
+/**
+ * 浏览器请求后端的绝对地址（构建时写入前端包）。
+ * - 本地 max dev：留空，走 config/proxy.ts
+ * - Vercel：Dashboard 配置 `API_SERVER`（Preview / Production 各一份），改完后需重新部署
+ * - 也可 `UMI_APP_API_SERVER`（Umi 约定前缀）或 npm run build:test / build:prod
+ */
+const API_SERVER =
+  process.env.API_SERVER || process.env.UMI_APP_API_SERVER || '';
+
+if (process.env.VERCEL) {
+  console.log(
+    `[cyber-wolf-admin] VERCEL_ENV=${process.env.VERCEL_ENV ?? ''} API_SERVER=${API_SERVER || '(empty — requests will hit the frontend origin)'}`,
+  );
+}
 
 // Compute commit hash: env vars take precedence, fall back to git at build time
 const commitHash =
@@ -114,7 +129,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
+  title: 'Cyber Wolf',
   layout: {
     locale: true,
     ...defaultSettings,
@@ -201,9 +216,10 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      // cyber-wolf-backend Swagger（需本地 backend 已启动，默认 :3001）
+      // 默认本机 swagger；远程：OPENAPI_SCHEMA_URL=... npm run openapi
       // 生成产物：src/services/cyber-wolf/（勿手改，改接口后重新 npm run openapi）
-      schemaPath: 'http://localhost:3001/docs-json',
+      schemaPath:
+        process.env.OPENAPI_SCHEMA_URL || 'http://localhost:3001/docs-json',
       projectName: 'cyber-wolf',
       mock: false,
     },
@@ -230,6 +246,11 @@ export default defineConfig({
   define: {
     'process.env.CI': process.env.CI,
     'process.env.COMMIT_HASH': commitHash,
+    // 必须 JSON 字面量进客户端；裸标识符 API_SERVER 在部分打包链路下可能未替换成功
+    'process.env.API_SERVER': API_SERVER,
+    API_SERVER,
+    BACKEND_DEV,
+    BACKEND_PROD,
     __APP_VERSION__: require('./../package.json').version,
     __UMI_VERSION__: require('@umijs/max/package.json').version,
     __UTOO_VERSION__: require('@utoo/pack/package.json').version,

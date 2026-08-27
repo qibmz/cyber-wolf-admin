@@ -31,10 +31,18 @@ export default {
   'pages.welcome.hello': 'Hello, {name}',
   'pages.welcome.alertMessage':
     'This is the Cyber Wolf admin console. Use the sidebar or the shortcuts below to get started.',
+  'pages.welcome.guest.title': 'Please sign in',
+  'pages.welcome.guest.desc':
+    'Sign in to use admin features such as user management.',
+  'pages.welcome.guest.action': 'Go to Login',
   'pages.welcome.card.users.title': 'Users',
   'pages.welcome.card.users.desc':
     'Browse and filter system users, roles, and status.',
   'pages.welcome.card.users.action': 'Open Users',
+  'pages.welcome.card.news.title': 'News',
+  'pages.welcome.card.news.desc':
+    'Create, edit, and manage news articles and covers.',
+  'pages.welcome.card.news.action': 'Open News',
   'pages.404.subTitle': 'Sorry, the page you visited does not exist.',
   'pages.404.buttonText': 'Back Home',
   'pages.admin.subPage.title': 'This page can only be viewed by Admin',

@@ -171,7 +171,11 @@ export const errorConfig: RequestConfig = {
           forceLogoutToLogin();
           return;
         }
-        message.error(`Response status:${status}`);
+        const responseBody = error.response.data;
+        const errorMessage = isBackendEnvelope(responseBody)
+          ? responseBody.msg
+          : `Response status:${status}`;
+        message.error(errorMessage);
       } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
         message.error(
           getIntl().formatMessage({

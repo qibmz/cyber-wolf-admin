@@ -3,7 +3,7 @@
 import { request } from "@umijs/max";
 
 /** 此处后端没有提供注释 POST /api/v1/files/upload */
-export async function filesLocalControllerUploadFileV1(
+export async function filesS3ControllerUploadFileV1(
   body: {},
   file?: File,
   options?: { [key: string]: any }

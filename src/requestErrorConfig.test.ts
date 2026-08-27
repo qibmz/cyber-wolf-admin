@@ -190,6 +190,22 @@ describe('requestErrorConfig', () => {
       expect(message.error).toHaveBeenCalledWith('Response status:500');
     });
 
+    it('should use backend error message from response envelope', () => {
+      const error: any = new Error('Axios error');
+      error.response = {
+        status: 500,
+        data: {
+          code: 500,
+          msg: '服务器内部错误',
+          errors: {},
+        },
+      };
+
+      errorHandler(error, {});
+
+      expect(message.error).toHaveBeenCalledWith('服务器内部错误');
+    });
+
     it('should handle offline error', () => {
       const error: any = new Error('Network error');
       error.request = {};
@@ -242,25 +258,25 @@ describe('requestErrorConfig', () => {
     const interceptor = errorConfig.requestInterceptors?.[0] as (config: {
       url?: string;
       method?: string;
-    }) => { url?: string };
+      headers?: Record<string, string>;
+    }) => Promise<{ url?: string; headers?: Record<string, string> }>;
 
-    it('should pass through config without modification', () => {
+    it('should pass through config and attach language header', async () => {
       const config = {
         url: 'https://api.example.com/users',
         method: 'GET',
       };
 
-      const result = interceptor(config);
+      const result = await interceptor(config);
 
-      // Token attachment is intentionally commented out in the source;
-      // interceptor currently returns config as-is
       expect(result.url).toBe('https://api.example.com/users');
+      expect(result.headers?.['x-custom-lang']).toBeDefined();
     });
 
-    it('should handle URL without config', () => {
+    it('should handle URL without config', async () => {
       const config = {};
 
-      const result = interceptor(config);
+      const result = await interceptor(config);
 
       expect(result.url).toBeUndefined();
     });

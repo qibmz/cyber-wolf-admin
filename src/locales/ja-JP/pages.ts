@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Ant Designは、西湖区で最も影響力のあるWebデザイン仕様です。',
+  'pages.layouts.userLayout.title': 'Cyber Wolf 管理コンソール',
   'pages.login.accountLogin.tab': 'アカウントログイン',
   'pages.login.accountLogin.errorMessage':
     'ユーザー名/パスワードが正しくありません(admin/ant.design)',
@@ -25,7 +24,7 @@ export default {
   'pages.login.loginWith': 'その他のログイン方法：',
   'pages.login.registerAccount': 'アカウント登録',
   'pages.welcome.link': 'ようこそ',
-  'pages.welcome.celebrationTitle': 'Ant Design Pro {v6} へようこそ',
+  'pages.welcome.celebrationTitle': 'Cyber Wolf Admin へようこそ',
   'pages.welcome.alertMessage':
     'より高速で強力な頑丈なコンポーネントがリリースされました。',
   'pages.404.subTitle':

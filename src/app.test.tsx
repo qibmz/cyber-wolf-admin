@@ -74,8 +74,7 @@ describe('app getInitialState', () => {
     mockAuthMe.mockResolvedValue({
       id: 1,
       email: 'admin@example.com',
-      firstName: 'Admin',
-      lastName: 'User',
+      nickname: 'Admin User',
       role: { id: 1, name: 'admin' },
     });
 
@@ -93,14 +92,14 @@ describe('app getInitialState', () => {
     expect(state.fetchUserInfo).toBeDefined();
   });
 
-  it('should redirect to login when currentUser fetch fails (401)', async () => {
+  it('should stay on welcome as guest when currentUser fetch fails (401)', async () => {
     const { getInitialState } = await import('./app');
     mockAuthMe.mockRejectedValue(new Error('401 Unauthorized'));
 
     const state = await getInitialState();
 
     expect(mockClearAuth).toHaveBeenCalled();
-    expect(mockRedirectToLogin).toHaveBeenCalledWith('/welcome');
+    expect(mockRedirectToLogin).not.toHaveBeenCalled();
     expect(state.currentUser).toBeUndefined();
   });
 
@@ -140,8 +139,7 @@ describe('app getInitialState', () => {
     mockAuthMe.mockResolvedValue({
       id: 2,
       email: 'user@example.com',
-      firstName: 'User',
-      lastName: '',
+      nickname: 'User',
       role: { id: 2, name: 'user' },
     });
 

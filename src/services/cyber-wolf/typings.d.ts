@@ -19,8 +19,7 @@ declare namespace API {
   type AuthRegisterLoginDto = {
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
+    nickname: string;
   };
 
   type AuthResetPasswordDto = {
@@ -30,18 +29,33 @@ declare namespace API {
 
   type AuthUpdateDto = {
     photo?: FileDto;
-    firstName?: string;
-    lastName?: string;
+    nickname?: string;
     email?: string;
     password?: string;
     oldPassword?: string;
   };
 
+  type CreateNewsArticleDto = {
+    sourceName: string;
+    sourceId: string;
+    publishedAt: string;
+    coverImage?: string;
+    category: string;
+    url: string;
+    summary: string;
+    title: string;
+  };
+
+  type CreateNewsCategoryDto = {
+    name: string;
+    /** 越小越靠前 */
+    sortOrder?: number;
+  };
+
   type CreateUserDto = {
+    nickname?: string;
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
     photo?: FileDto;
     role?: RoleDto;
     status?: StatusDto;
@@ -63,11 +77,19 @@ declare namespace API {
   type InfinityPaginationNewsArticleResponseDto = {
     data: NewsArticle[];
     hasNextPage: boolean;
+    total: number;
+  };
+
+  type InfinityPaginationNewsCategoryResponseDto = {
+    data: NewsCategory[];
+    hasNextPage: boolean;
+    total: number;
   };
 
   type InfinityPaginationUserResponseDto = {
     data: User[];
     hasNextPage: boolean;
+    total: number;
   };
 
   type LoginResponseDto = {
@@ -78,7 +100,6 @@ declare namespace API {
   };
 
   type NewsArticle = {
-    coverColor: string;
     sourceName: string;
     sourceId: string;
     publishedAt: string;
@@ -90,6 +111,32 @@ declare namespace API {
     id: string;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: Record<string, any>;
+  };
+
+  type NewsArticlesAdminControllerFindAllV1Params = {
+    page?: number;
+    limit?: number;
+    /** 按分类筛选（如 Market / Technology） */
+    category?: string;
+    /** all=全部，notDeleted=未删除，deleted=已删除；默认 notDeleted */
+    deletedStatus?: "all" | "notDeleted" | "deleted";
+  };
+
+  type NewsArticlesAdminControllerFindByIdV1Params = {
+    id: string;
+  };
+
+  type NewsArticlesAdminControllerRemoveV1Params = {
+    id: string;
+  };
+
+  type NewsArticlesAdminControllerRestoreV1Params = {
+    id: string;
+  };
+
+  type NewsArticlesAdminControllerUpdateV1Params = {
+    id: string;
   };
 
   type NewsArticlesControllerFindAllV1Params = {
@@ -101,6 +148,38 @@ declare namespace API {
 
   type NewsArticlesControllerFindByIdV1Params = {
     id: string;
+  };
+
+  type NewsCategoriesAdminControllerFindAllV1Params = {
+    page?: number;
+    limit?: number;
+    /** all=全部，notDeleted=未删除，deleted=已删除；默认 notDeleted */
+    deletedStatus?: "all" | "notDeleted" | "deleted";
+  };
+
+  type NewsCategoriesAdminControllerFindByIdV1Params = {
+    id: string;
+  };
+
+  type NewsCategoriesAdminControllerRemoveV1Params = {
+    id: string;
+  };
+
+  type NewsCategoriesAdminControllerRestoreV1Params = {
+    id: string;
+  };
+
+  type NewsCategoriesAdminControllerUpdateV1Params = {
+    id: string;
+  };
+
+  type NewsCategory = {
+    name: string;
+    sortOrder: number;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: Record<string, any>;
   };
 
   type RefreshResponseDto = {
@@ -115,7 +194,7 @@ declare namespace API {
   };
 
   type RoleDto = {
-    id: Record<string, any>;
+    id: number;
   };
 
   type Status = {
@@ -124,31 +203,41 @@ declare namespace API {
   };
 
   type StatusDto = {
-    id: Record<string, any>;
+    id: number;
+  };
+
+  type UpdateNewsArticleDto = {
+    sourceName?: string;
+    sourceId?: string;
+    publishedAt?: string;
+    coverImage?: string;
+    category?: string;
+    url?: string;
+    summary?: string;
+    title?: string;
+  };
+
+  type UpdateNewsCategoryDto = {
+    name?: string;
+    /** 越小越靠前 */
+    sortOrder?: number;
   };
 
   type UpdateUserDto = {
+    nickname?: string;
     email?: string;
     password?: string;
-    firstName?: string;
-    lastName?: string;
     photo?: FileDto;
     role?: RoleDto;
     status?: StatusDto;
   };
 
-  type UpdateUserNameDto = {
-    firstName?: string;
-    lastName?: string;
-  };
-
   type User = {
+    nickname: string;
     id: number;
     email: string;
     provider: string;
     socialId: string;
-    firstName: string;
-    lastName: string;
     photo: FileType;
     role: Role;
     status: Status;
@@ -169,10 +258,6 @@ declare namespace API {
   };
 
   type UsersControllerRemoveV1Params = {
-    id: string;
-  };
-
-  type UsersControllerUpdateNameV1Params = {
     id: string;
   };
 

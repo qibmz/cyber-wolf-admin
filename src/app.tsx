@@ -25,6 +25,19 @@ import { errorConfig } from './requestErrorConfig';
 
 const loginPath = '/user/login';
 
+/** 未登录也可访问，不强制跳转登录页 */
+const publicPaths = [
+  loginPath,
+  '/welcome',
+  '/',
+  '/user/register',
+  '/user/register-result',
+];
+
+function isPublicPath(pathname: string) {
+  return publicPaths.includes(pathname);
+}
+
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
  * */
@@ -44,14 +57,14 @@ export async function getInitialState(): Promise<{
     } catch (_error) {
       clearAuth();
       const { pathname, search, hash } = history.location;
-      // 登录页内失败不二次跳转
-      if (pathname !== loginPath) {
+      // 公开页（含 welcome）失败不强制跳登录
+      if (!isPublicPath(pathname)) {
         redirectToLogin(`${pathname}${search}${hash}`);
       }
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+  // 登录相关页不拉用户信息；其余页尝试拉取（公开页失败可继续访客态）
   const { location } = history;
   if (
     ![loginPath, '/user/register', '/user/register-result'].includes(
@@ -113,8 +126,8 @@ export const layout: RunTimeLayoutConfig = ({
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      // 未登录且非公开页时，重定向到 login
+      if (!initialState?.currentUser && !isPublicPath(location.pathname)) {
         redirectToLogin(
           `${location.pathname}${location.search}${location.hash}`,
         );
@@ -184,8 +197,8 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  // 开发走 config/proxy.ts → cyber-wolf-backend；生产由网关同域反代 /api
-  baseURL: '',
+  // 开发：config/proxy.ts；Vercel：构建时 define 注入 process.env.API_SERVER
+  baseURL: process.env.API_SERVER || '',
   ...errorConfig,
 };
 

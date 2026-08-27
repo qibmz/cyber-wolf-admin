@@ -6,9 +6,9 @@ Ant Design Pro — React enterprise boilerplate on Umi Max v4, antd v6, ProCompo
 
 ## Commands
 
-`npm run dev` (**推荐本地联调**：`MOCK=none` + proxy → `http://localhost:3001`), `npm start` (dev+mock，旧 Pro mock，不用于对接 backend), `npm run build` (utoopack), `npm run lint` (Biome+tsc), `npm run test` (Vitest), `npx antd lint ./src` (antd-specific checks).
+`npm run dev`（**本地联调**：`MOCK=none` + proxy → `http://localhost:3001`）, `npm run start:test`（proxy → 测试后端）, `npm start`（dev+mock，旧 Pro mock，不用于对接 backend）, `npm run build`（utoopack；同域 `/api`）, `npm run build:test` / `npm run build:prod`（直连远程后端）, `npm run lint` (Biome+tsc), `npm run test` (Vitest), `npx antd lint ./src` (antd-specific checks).
 
-Other: `npm run openapi` (从 `http://localhost:3001/docs-json` 生成 `src/services/cyber-wolf/`，需先启动 backend), `npm run biome` (auto-fix), `npm run tsc` (type-check only).
+Other: `npm run openapi`（本机 `http://localhost:3001/docs-json`）, `npm run openapi:remote`（测试后端 swagger）, `npm run biome` (auto-fix), `npm run tsc` (type-check only).
 
 ## Critical Rules
 
@@ -20,14 +20,31 @@ Other: `npm run openapi` (从 `http://localhost:3001/docs-json` 生成 `src/serv
 - **TypeScript strict** · **Node ≥ 22** · **`package-lock.json`** (not yarn/pnpm；勿提交 `pnpm-lock.yaml` / `yarn.lock`)
 - **`.umi` dir is auto-generated** — delete `src/.umi` and restart if dev server acts up
 
-## Local backend
+## Backend
+
+| 环境 | 地址 |
+| --- | --- |
+| 本地 | `http://localhost:3001` |
+| 测试 | `https://cyber-wolf-backend-dev.qibmz.com` |
+| 正式 | `https://cyber-wolf-backend.qibmz.com` |
+
+本地联调：
 
 1. 启动 **cyber-wolf-backend**（默认 `APP_PORT=3001`）
 2. 本仓库执行 `npm run dev`
 3. 浏览器打开 `http://localhost:8000/user/login`
 4. 种子账号示例：`admin@example.com` / `secret`（以 backend seed 为准）
 
-代理见 `config/proxy.ts`（`/api/` → `:3001`）。Token 存 `localStorage`（`token` / `refreshToken` / `tokenExpires`）。
+不启本机 backend 时可 `npm run start:test`，代理到测试域。代理见 `config/proxy.ts`（`/api/`）。Token 存 `localStorage`（`token` / `refreshToken` / `tokenExpires`）。
+
+Vercel（[Environment Variables](https://vercel.com/docs/environment-variables)）：同一变量名 `API_SERVER`，按环境勾选即可。Umi 通过 `config.define` 在**构建时**写入前端包，改 env 后必须 **Redeploy**。
+
+| Environment | `API_SERVER` |
+| --- | --- |
+| Preview（含 `develop`） | `https://cyber-wolf-backend-dev.qibmz.com`（不要末尾 `/`） |
+| Production（`main`） | `https://cyber-wolf-backend.qibmz.com` |
+
+自查：Vercel 构建日志应出现 `[cyber-wolf-admin] ... API_SERVER=https://...`；若是 `(empty)` 说明该次构建没读到变量（环境未勾选 Preview/Production，或未重新部署）。浏览器 Network 里登录请求应指向后端域名；若仍指向 `*.vercel.app`，包是旧的。后端需 CORS 放行对应前端 Origin。
 
 ## Architecture Essentials
 

@@ -1,7 +1,7 @@
 import { LogoutOutlined, SkinOutlined } from '@ant-design/icons';
-import { history, useModel } from '@umijs/max';
+import { history, useIntl, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
-import { Spin } from 'antd';
+import { Button, Spin } from 'antd';
 import React, { startTransition } from 'react';
 import { authControllerLogoutV1 } from '@/services/cyber-wolf/auth';
 import { clearAuth } from '@/utils/auth';
@@ -52,6 +52,7 @@ const loginOut = async () => {
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
   children,
 }) => {
+  const intl = useIntl();
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick: MenuProps['onClick'] = (event) => {
@@ -75,7 +76,14 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
   const { currentUser } = initialState;
 
   if (!currentUser) {
-    return <Spin size="small" />;
+    return (
+      <Button type="primary" onClick={() => history.push('/user/login')}>
+        {intl.formatMessage({
+          id: 'menu.login',
+          defaultMessage: '登录',
+        })}
+      </Button>
+    );
   }
 
   return (

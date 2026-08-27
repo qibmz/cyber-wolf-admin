@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Ant Design é a especificação de web design mais influente no distrito de Xihu',
+  'pages.layouts.userLayout.title': 'Console Admin Cyber Wolf',
   'pages.login.accountLogin.tab': 'Login da conta',
   'pages.login.accountLogin.errorMessage':
     'usuário/senha incorreto(admin/ant.design)',
@@ -26,7 +25,7 @@ export default {
   'pages.login.loginWith': 'Login com :',
   'pages.login.registerAccount': 'Registra Conta',
   'pages.welcome.link': 'Bem-vindo',
-  'pages.welcome.celebrationTitle': 'Bem-vindo ao Ant Design Pro {v6}',
+  'pages.welcome.celebrationTitle': 'Bem-vindo ao Cyber Wolf Admin',
   'pages.welcome.alertMessage':
     'Componentes pesados mais rápidos e mais fortes foram lançados.',
   'pages.404.subTitle': 'Desculpe, a página que você visitou não existe. ',

@@ -19,7 +19,12 @@ yarn-error.log
 yarn.lock
 pnpm-lock.yaml
 *bak
-.vscode
+# IDE - VSCode (commit shared workspace settings only)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
 
 
 # visual studio code
